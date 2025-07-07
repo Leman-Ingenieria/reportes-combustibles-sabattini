@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Generador de Reportes PDF</title>
   <style>
     body {
@@ -24,6 +24,7 @@
       margin-top: 5px;
       border-radius: 4px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
       margin-top: 2rem;
@@ -45,10 +46,10 @@
   <h2>Generador de Reportes PDF</h2>
 
   <label for="desde">Desde:</label>
-  <input type="date" id="desde">
+  <input type="date" id="desde" />
 
   <label for="hasta">Hasta:</label>
-  <input type="date" id="hasta">
+  <input type="date" id="hasta" />
 
   <label for="chofer">Chofer:</label>
   <select id="chofer">
@@ -63,9 +64,8 @@
   <button onclick="generarReporte()">Generar Reporte</button>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzvG5lEuxos2i0Xsf7hddrNTyaeNWsQQanIfUDybVJ4mpfVny1bPlE8hQ0Dtc4v2rCz/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/library/d/167oJKwCbEvVnjvRWFh77ux3jTeHCwOXUNEFtEzr6tMGJR60jPT-oH30R/11";
 
-    // Cargar listas al iniciar
     window.addEventListener('DOMContentLoaded', () => {
       fetch(WEB_APP_URL)
         .then(res => res.json())

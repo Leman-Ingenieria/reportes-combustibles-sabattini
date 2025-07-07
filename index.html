@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Reportes PDF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 12px;
+      width: 100%;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #125ea3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Generador de Reportes PDF</h2>
+
+  <label for="desde">Desde:</label>
+  <input type="date" id="desde">
+
+  <label for="hasta">Hasta:</label>
+  <input type="date" id="hasta">
+
+  <label for="chofer">Chofer:</label>
+  <select id="chofer">
+    <option value="">(Todos)</option>
+  </select>
+
+  <label for="empresa">Empresa:</label>
+  <select id="empresa">
+    <option value="">(Todas)</option>
+  </select>
+
+  <button onclick="generarReporte()">Generar Reporte</button>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzvG5lEuxos2i0Xsf7hddrNTyaeNWsQQanIfUDybVJ4mpfVny1bPlE8hQ0Dtc4v2rCz/exec";
+
+    // Cargar listas al iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch(WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+          poblarSelect('chofer', data.choferes);
+          poblarSelect('empresa', data.empresas);
+        })
+        .catch(error => {
+          console.error('Error al cargar datos:', error);
+          alert('No se pudieron cargar las listas de choferes y empresas.');
+        });
+    });
+
+    function poblarSelect(id, valores) {
+      const select = document.getElementById(id);
+      valores.forEach(valor => {
+        const option = document.createElement("option");
+        option.value = valor;
+        option.textContent = valor;
+        select.appendChild(option);
+      });
+    }
+
+    function generarReporte() {
+      const desde = document.getElementById("desde").value;
+      const hasta = document.getElementById("hasta").value;
+      const chofer = document.getElementById("chofer").value;
+      const empresa = document.getElementById("empresa").value;
+
+      if (!desde || !hasta) {
+        alert("Por favor completá las fechas DESDE y HASTA.");
+        return;
+      }
+
+      const params = new URLSearchParams({ desde, hasta, chofer, empresa });
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString()
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.url) {
+            window.open(data.url, "_blank");
+          } else {
+            alert("Error al generar el reporte. Revisá los parámetros.");
+            console.error(data);
+          }
+        })
+        .catch(err => {
+          alert("Error inesperado al generar el reporte.");
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
